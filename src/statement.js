@@ -8,6 +8,10 @@ function statement(invoice, plays) {
   return generateInvoice(invoice, plays);
 }
 
+function statementByHtml(invoice, plays) {
+  return generateInvoiceByHtml(invoice, plays);
+}
+
 function generateInvoice(invoice, plays) {
   let result = `Statement for ${invoice.customer}\n`;
   let totalAmount = countTotalAmount(invoice, plays);
@@ -18,11 +22,30 @@ function generateInvoice(invoice, plays) {
   return result;
 }
 
+function generateInvoiceByHtml(invoice, plays) {
+  let result = `<h1>Statement for ${invoice.customer}</h1>\n<table>\n<tr><th>play</th><th>seats</th><th>cost</th></tr>`;
+  let totalAmount = countTotalAmount(invoice, plays);
+  let volumeCredits = countRedits(invoice, plays);
+  result = printLineOfOrderByHtml(invoice, plays, result, format);
+  result += `</table>\n<p>Amount owed is <em>${format(totalAmount / 100)}</em></p>\n`;
+  result += `<p>You earned <em>${volumeCredits}</em> credits</p>\n`;
+  return result;
+}
+
 function printLineOfOrder(invoice, plays, result, format) {
   for (let perf of invoice.performances) {
     const play = plays[perf.playID];
     let thisAmount = countEachAmount(play, perf);
     result += ` ${play.name}: ${format(thisAmount / 100)} (${perf.audience} seats)\n`;
+  }
+  return result;
+}
+
+function printLineOfOrderByHtml(invoice, plays, result, format) {
+  for (let perf of invoice.performances) {
+    const play = plays[perf.playID];
+    let thisAmount = countEachAmount(play, perf);
+    result += ` <tr><td>${play.name}</td><td>${perf.audience}</td><td>${format(thisAmount / 100)}</td></tr>\n`;
   }
   return result;
 }
@@ -73,5 +96,6 @@ function countRedits(invoice, plays) {
 
 module.exports = {
   statement,
+  statementByHtml,
 };
 
