@@ -3,9 +3,12 @@ const format = new Intl.NumberFormat('en-US', {
   currency: 'USD',
   minimumFractionDigits: 2,
 }).format;
+
 function statement(invoice, plays) {
+  return generateInvoice(invoice, plays);
+}
 
-
+function generateInvoice(invoice, plays) {
   let result = `Statement for ${invoice.customer}\n`;
   let totalAmount = countTotalAmount(invoice, plays);
   let volumeCredits = countRedits(invoice, plays);
@@ -14,10 +17,6 @@ function statement(invoice, plays) {
   result += `You earned ${volumeCredits} credits \n`;
   return result;
 }
-
-module.exports = {
-  statement,
-};
 
 function printLineOfOrder(invoice, plays, result, format) {
   for (let perf of invoice.performances) {
@@ -71,4 +70,8 @@ function countRedits(invoice, plays) {
   }
   return volumeCredits;
 }
+
+module.exports = {
+  statement,
+};
 
